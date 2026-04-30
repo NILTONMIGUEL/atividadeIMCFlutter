@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,6 +33,7 @@ class _MainAppState extends State<MainApp> {
   String imcPeso = "";
   double imc = 0;
   bool mostrarDados = false;
+  double _largura = 0.0;
 
   void calcularIMC() {
     if (_formkey.currentState!.validate()) {
@@ -44,35 +47,41 @@ class _MainAppState extends State<MainApp> {
           altura = altura / 100;
           imc = peso / (altura * altura);
 
-          if (imc >= 5 && imc <= 18.50) {
+          if (imc > 0 && imc <= 18.50) {
             mostrarDados = true;
             imcPeso = "Magreza";
             imcColor = Colors.deepOrangeAccent;
             resultado = "${imc.toStringAsFixed(2)}";
-          } else if (imc <= 24.90) {
+            // _largura = 300;
+          } else if (imc > 18.50 && imc <= 24.90) {
             mostrarDados = true;
             imcPeso = "Normal";
             imcColor = Colors.green;
+            // _largura = 300;
             resultado = "${imc.toStringAsFixed(2)}";
-          } else if (imc <= 29.90) {
+          } else if (imc > 24.90 && imc <= 29.90) {
             mostrarDados = true;
             imcPeso = "SobrePeso";
             imcColor = Colors.yellow;
+            // _largura = 300;
             resultado = "${imc.toStringAsFixed(2)}";
-          } else if (imc <= 34.90) {
+          } else if (imc > 29.90 && imc <= 34.90) {
+            // _largura = 300;
             mostrarDados = true;
             imcPeso = "Obesidade Grau 1";
-            imcColor = const Color.fromARGB(255, 233, 57, 3);
+            imcColor = const Color.fromARGB(255, 255, 98, 50);
             resultado = "${imc.toStringAsFixed(2)}";
-          } else if (imc <= 39.90) {
+          } else if (imc > 34.90 && imc <= 39.90) {
+            // _largura = 300;
             mostrarDados = true;
             imcPeso = "Obesidade Grau 2 ";
-            imcColor = const Color.fromARGB(255, 187, 44, 0);
+            imcColor = const Color.fromARGB(255, 235, 2, 91);
             resultado = "${imc.toStringAsFixed(2)}";
           } else if (imc > 39.90) {
+            // _largura = 300;
             mostrarDados = true;
             imcPeso = "Obesidade Grau 3 ";
-            imcColor = const Color.fromARGB(255, 122, 29, 0);
+            imcColor = const Color.fromARGB(255, 226, 16, 1);
             resultado = "${imc.toStringAsFixed(2)}";
           } else {
             mostrarDados = false;
@@ -83,6 +92,13 @@ class _MainAppState extends State<MainApp> {
 
       setState(() {
         resultado;
+
+        _largura = 0;
+      });
+      Future.delayed(Duration(milliseconds: 800), () {
+        setState(() {
+          _largura = 300;
+        });
       });
     }
   }
@@ -253,18 +269,24 @@ class _MainAppState extends State<MainApp> {
                           ),
                         ),
                       ),
-                      Container(
-                        child: Container(
-                          width: double.infinity,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: mostrarDados
-                                ? imcColor
-                                : const Color.fromARGB(0, 0, 0, 0),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+                      mostrarDados
+                          ? Container(
+                              child: AnimatedContainer(
+                                duration: const Duration(
+                                  milliseconds: 500,
+                                ), // Tempo da animação
+                                curve: Curves.easeInOut,
+                                width: _largura,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: mostrarDados
+                                      ? imcColor
+                                      : const Color.fromARGB(0, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
